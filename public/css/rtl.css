@@ -1,0 +1,35 @@
+/* Minimal RTL base only; rely on template's .rtl rules */
+html[dir="rtl"] body {
+  direction: rtl;
+}
+
+/* Professional Arabic font stack for RTL pages */
+body.rtl,
+body.rtl * {
+  font-family: "IBM Plex Sans Arabic", "Tajawal", "Cairo", "Noto Sans Arabic", "Segoe UI", Arial, sans-serif;
+}
+
+/* Ensure headings also use the Arabic font stack */
+body.rtl h1,
+body.rtl h2,
+body.rtl h3,
+body.rtl h4,
+body.rtl h5,
+body.rtl h6 {
+  font-weight: 600;
+}
+
+/* Fix navbar/sidebar alignment gap for RTL: keep navbar full width */
+body.rtl .navbar {
+  right: 0 !important;
+}
+
+/* In RTL, keep navbar content aligned to the right instead of flipping to the left */
+body.rtl .navbar .navbar-menu-wrapper {
+  justify-content: flex-start !important;
+}
+
+/* Slightly widen cards content area on RTL for better readability */
+body.rtl .card .card-body {
+  padding-inline: 1.75rem;
+}
