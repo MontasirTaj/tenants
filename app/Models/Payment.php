@@ -11,6 +11,7 @@ class Payment extends Model
 
     protected $fillable = [
         'tenant_id', 'user_id', 'plan', 'currency', 'amount_total', 'status', 'type',
+        'ip_address', 'user_agent',
         'stripe_session_id', 'stripe_payment_intent_id', 'stripe_customer_id', 'stripe_charge_id', 'receipt_url',
         'customer_details', 'metadata',
     ];

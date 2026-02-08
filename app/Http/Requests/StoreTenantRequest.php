@@ -19,7 +19,7 @@ class StoreTenantRequest extends FormRequest
             'PhoneNumber' => ['nullable','string','max:20','regex:/^\+?[0-9\-\s]{6,20}$/'],
             // Subdomain will be auto-assigned to app_{TenantID} after create; allow optional input
             'Subdomain' => ['nullable','string','max:50','regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/','unique:tenants,Subdomain'],
-            'Email' => ['nullable','email','max:255','unique:tenants,Email'],
+            'Email' => ['required','email','max:255','unique:tenants,Email'],
             'Address' => ['nullable','string','max:500'],
             'Plan' => ['required','in:free,pro,business'],
         ];
@@ -44,6 +44,7 @@ class StoreTenantRequest extends FormRequest
             // Informational: subdomain is auto-generated
             'Subdomain.nullable' => __('سيتم تعيين النطاق الفرعي تلقائياً بصيغة app_{id}'),
 
+            'Email.required' => __('البريد الإلكتروني مطلوب'),
             'Email.email' => __('بريد إلكتروني غير صالح'),
             'Email.unique' => __('البريد الإلكتروني مستخدم مسبقاً'),
             'Email.max' => __('البريد الإلكتروني لا يزيد عن 255 حرفاً'),

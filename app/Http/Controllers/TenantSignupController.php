@@ -44,6 +44,22 @@ class TenantSignupController extends Controller
         $validated = $request->validated();
         $now = Carbon::now();
 
+        // منع تكرار الاشتراك المجاني لنفس البريد
+        if (($validated['Plan'] ?? null) === 'free') {
+            $email = $validated['Email'] ?? null;
+            if ($email) {
+                $alreadyFree = Tenant::where('Email', $email)
+                    ->where('Plan', 'free')
+                    ->exists();
+
+                if ($alreadyFree) {
+                    return back()
+                        ->withErrors(['Email' => __('هذا البريد استخدم مسبقاً في اشتراك مجاني، لا يمكن تكرار الاشتراك المجاني لنفس البريد.')])
+                        ->withInput();
+                }
+            }
+        }
+
         $tenant = new Tenant();
         $tenant->TenantName = $validated['TenantName'];
         $tenant->OwnerName = $validated['OwnerName'] ?? null;
@@ -82,7 +98,13 @@ class TenantSignupController extends Controller
             $tenantModel = $tenant;
             $tenantModel->IsActive = true;
             $tenantModel->Status = 1;
-            $tenantModel->SubscriptionStartDate = Carbon::now()->toDateString();
+
+            // بداية الاشتراك الآن، ونهايته بعد أسبوع ناقص يوم واحد
+            $startDate = Carbon::now()->toDateString();
+            $endDate = Carbon::parse($startDate)->addWeek()->subDay()->toDateString();
+
+            $tenantModel->SubscriptionStartDate = $startDate;
+            $tenantModel->SubscriptionEndDate = $endDate;
             $tenantModel->save();
 
             // سجل عملية مجانية
@@ -95,6 +117,8 @@ class TenantSignupController extends Controller
                     'amount_total' => 0,
                     'status' => 'free',
                     'type' => 'tenant_signup_free',
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
                     'stripe_session_id' => null,
                     'stripe_payment_intent_id' => null,
                     'stripe_customer_id' => null,
@@ -184,7 +208,13 @@ class TenantSignupController extends Controller
         if ($session && $session->payment_status === 'paid') {
             $tenantModel->IsActive = true;
             $tenantModel->Status = 1;
-            $tenantModel->SubscriptionStartDate = Carbon::now()->toDateString();
+
+            // بداية الاشتراك الآن، ونهايته بعد سنة ناقص يوم واحد
+            $startDate = Carbon::now()->toDateString();
+            $endDate = Carbon::parse($startDate)->addYear()->subDay()->toDateString();
+
+            $tenantModel->SubscriptionStartDate = $startDate;
+            $tenantModel->SubscriptionEndDate = $endDate;
             $tenantModel->save();
 
             // سجل عملية الدفع في قاعدة البيانات الرئيسية
@@ -211,6 +241,8 @@ class TenantSignupController extends Controller
                     'amount_total' => $session->amount_total ?? null,
                     'status' => $session->payment_status ?? null,
                     'type' => 'tenant_signup',
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
                     'stripe_session_id' => $session->id ?? null,
                     'stripe_payment_intent_id' => $paymentIntentId,
                     'stripe_customer_id' => $session->customer ?? null,
