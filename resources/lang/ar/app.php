@@ -98,6 +98,25 @@ return [
     'tenant_users_create_intro' => 'أضف مستخدماً جديداً للمستأجر وحدّد له الدور المناسب.',
     'tenant_users_list_title' => 'قائمة المستخدمين',
     'tenant_users_list_intro' => 'إدارة المستخدمين الحاليين والأدوار المرتبطة بكل مستخدم.',
+    
+    // Tenant dashboard metrics & activity
+    'tenant_dash_last_login' => 'آخر دخول',
+    'tenant_dash_last_activity' => 'آخر نشاط مهم',
+    'tenant_dash_open_complaints' => 'البلاغات المفتوحة',
+    'tenant_dash_subscription_status' => 'حالة الاشتراك',
+    'tenant_dash_activity_timeline' => 'أحدث الأنشطة',
+    'tenant_dash_activity_empty' => 'لا توجد أنشطة مسجّلة حتى الآن لهذا المستأجر.',
+    'last_activity' => 'آخر نشاط',
+    'sessions_count' => 'عدد الجلسات',
+    'inactive_users_title' => 'مستخدمون غير نشطين (بدون نشاط منذ :days يوماً)',
+    'inactive_users_intro' => 'هؤلاء المستخدمون لم يظهر لهم أي نشاط خلال آخر :days يوماً. يمكنك مراجعتهم أو تنظيف الحسابات غير النشطة.',
+    'unknown_user' => 'النظام',
+
+    // بطاقات ملخص لوحة تحكم المستأجر (الصف الثاني)
+    'tenant_dashboard_users_count' => 'مستخدمو المستأجر',
+    'tenant_dashboard_users_hint' => 'إجمالي عدد المستخدمين الحاليين في هذا المستأجر.',
+    'tenant_dash_operations' => 'العمليات',
+    'tenant_dash_operations_today_week' => ':today اليوم / :week هذا الأسبوع',
 
     // Generic role/permission helpers
     'role' => 'الدور',
@@ -138,6 +157,8 @@ return [
     // Confirmations
     'confirm_delete_user' => 'تأكيد حذف المستخدم؟',
     'confirm_delete_attachment' => 'هل أنت متأكد من حذف هذا المرفق؟',
+    'confirm_delete_role' => 'هل أنت متأكد من حذف هذا الدور؟',
+    'confirm_delete_permission' => 'هل أنت متأكد من حذف هذه الصلاحية؟',
 
     // Tenant dashboard cards
     'tenant_dash_users_desc' => 'إدارة مستخدمي المستأجر والأدوار الخاصة بهم.',

@@ -4,16 +4,61 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Models\TenantUser;
 use App\Models\TenantRole as Role;
+use App\Models\TenantActivityLog;
 
 class TenantUserController extends Controller
 {
     public function index(string $subdomain)
     {
-        $users = TenantUser::all();
+        $users = TenantUser::with('roles')->get();
         $roles = Role::all();
-        return view('pages.tenant.users.index', compact('users','roles'));
+
+        // Aggregate activity information per user from activity logs
+        $activityAggregates = collect();
+        try {
+            $activityAggregates = TenantActivityLog::select(
+                    'user_id',
+                    DB::raw('MAX(created_at) as last_activity'),
+                    DB::raw('COUNT(*) as total_hits')
+                )
+                ->whereNotNull('user_id')
+                ->groupBy('user_id')
+                ->get()
+                ->keyBy('user_id');
+        } catch (\Throwable $e) {
+            $activityAggregates = collect();
+        }
+
+        foreach ($users as $user) {
+            $agg = $activityAggregates->get($user->id);
+            $user->last_activity_at = $agg ? $agg->last_activity : null;
+            $user->activity_hits = $agg ? (int) $agg->total_hits : 0;
+        }
+
+        $inactiveThresholdDays = 30;
+        $inactiveUsers = collect();
+        try {
+            $now = Carbon::now();
+            $inactiveUsers = $users->filter(function ($user) use ($now, $inactiveThresholdDays) {
+                if ($user->last_activity_at) {
+                    return Carbon::parse($user->last_activity_at)->lt($now->copy()->subDays($inactiveThresholdDays));
+                }
+                return true;
+            });
+        } catch (\Throwable $e) {
+            $inactiveUsers = collect();
+        }
+
+        return view('pages.tenant.users.index', [
+            'users' => $users,
+            'roles' => $roles,
+            'inactiveUsers' => $inactiveUsers,
+            'inactiveThresholdDays' => $inactiveThresholdDays,
+        ]);
     }
 
     public function store(Request $request, string $subdomain)

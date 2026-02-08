@@ -26,6 +26,35 @@ class TenantPermissionController extends Controller
         return back()->with('status', __('تم إنشاء الصلاحية'));
     }
 
+    public function edit(string $subdomain, int $permission)
+    {
+        $model = Permission::findOrFail($permission);
+        return view('pages.tenant.permissions.edit', ['permission' => $model]);
+    }
+
+    public function update(Request $request, string $subdomain, int $permission)
+    {
+        $model = Permission::findOrFail($permission);
+
+        $data = $request->validate([
+            // نستخدم اتصال "tenant" لضمان التحقق داخل قاعدة بيانات المستأجر
+            'name' => 'required|string|max:64|unique:tenant.permissions,name,' . $model->id,
+        ]);
+
+        $oldName = $model->name;
+        $model->name = $data['name'];
+        $model->save();
+
+        tenant_activity('tenant.permissions.update', 'update_permission', $model, [
+            'description' => 'تم تحديث اسم الصلاحية',
+            'old_name' => $oldName,
+            'new_name' => $model->name,
+        ]);
+
+        return redirect()->route('tenant.subdomain.permissions.index', ['subdomain' => $subdomain])
+            ->with('status', __('تم تحديث الصلاحية'));
+    }
+
     public function exportExcel(string $subdomain)
     {
         $permissions = Permission::all();
@@ -66,5 +95,19 @@ class TenantPermissionController extends Controller
             'permissions' => $permissions,
             'subdomain' => $subdomain,
         ]);
+    }
+
+    public function destroy(string $subdomain, int $permission)
+    {
+        $model = Permission::findOrFail($permission);
+
+        tenant_activity('tenant.permissions.destroy', 'delete_permission', $model, [
+            'description' => 'تم حذف صلاحية',
+            'name' => $model->name,
+        ]);
+
+        $model->delete();
+
+        return back()->with('status', __('تم حذف الصلاحية'));
     }
 }

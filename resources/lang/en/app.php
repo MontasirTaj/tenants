@@ -99,6 +99,25 @@ return [
     'tenant_users_list_title' => 'Users list',
     'tenant_users_list_intro' => 'Manage existing users and the roles assigned to each.',
 
+    // Tenant dashboard metrics & activity
+    'tenant_dash_last_login' => 'Last login',
+    'tenant_dash_last_activity' => 'Last important activity',
+    'tenant_dash_open_complaints' => 'Open complaints',
+    'tenant_dash_subscription_status' => 'Subscription status',
+    'tenant_dash_activity_timeline' => 'Recent activity',
+    'tenant_dash_activity_empty' => 'No activity has been recorded yet for this tenant.',
+    'last_activity' => 'Last activity',
+    'sessions_count' => 'Sessions count',
+    'inactive_users_title' => 'Inactive users (no activity in :days days)',
+    'inactive_users_intro' => 'These users did not show any activity in the last :days days. Consider reviewing or cleaning up inactive accounts.',
+    'unknown_user' => 'System',
+
+    // Tenant dashboard summary cards (second row)
+    'tenant_dashboard_users_count' => 'Users in tenant',
+    'tenant_dashboard_users_hint' => 'Total users currently in this tenant.',
+    'tenant_dash_operations' => 'Operations',
+    'tenant_dash_operations_today_week' => ':today today / :week this week',
+
     // Generic role/permission helpers
     'role' => 'Role',
     'none' => 'None',
@@ -138,6 +157,8 @@ return [
     // Confirmations
     'confirm_delete_user' => 'Confirm user deletion?',
     'confirm_delete_attachment' => 'Are you sure you want to delete this attachment?',
+    'confirm_delete_role' => 'Are you sure you want to delete this role?',
+    'confirm_delete_permission' => 'Are you sure you want to delete this permission?',
 
     // Tenant dashboard cards
     'tenant_dash_users_desc' => 'Manage tenant users and their roles.',

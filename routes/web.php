@@ -370,8 +370,17 @@ Route::domain('{subdomain}.' . parse_url(config('app.url'), PHP_URL_HOST))
             Route::post('roles', [TenantRoleController::class, 'store'])
                 ->name('tenant.subdomain.roles.store');
 
+            Route::get('roles/{role}/edit', [TenantRoleController::class, 'edit'])
+                ->name('tenant.subdomain.roles.edit');
+
+            Route::match(['put','patch'], 'roles/{role}', [TenantRoleController::class, 'update'])
+                ->name('tenant.subdomain.roles.update');
+
             Route::post('roles/attach', [TenantRoleController::class, 'attachPermission'])
                 ->name('tenant.subdomain.roles.attach');
+
+            Route::delete('roles/{role}', [TenantRoleController::class, 'destroy'])
+                ->name('tenant.subdomain.roles.destroy');
 
             // عرض الأدوار مع صلاحياتها
             Route::get('roles-with-permissions', [TenantRoleController::class, 'withPermissions'])
@@ -386,11 +395,20 @@ Route::domain('{subdomain}.' . parse_url(config('app.url'), PHP_URL_HOST))
             Route::post('permissions', [TenantPermissionController::class, 'store'])
                 ->name('tenant.subdomain.permissions.store');
 
+            Route::get('permissions/{permission}/edit', [TenantPermissionController::class, 'edit'])
+                ->name('tenant.subdomain.permissions.edit');
+
+            Route::match(['put','patch'], 'permissions/{permission}', [TenantPermissionController::class, 'update'])
+                ->name('tenant.subdomain.permissions.update');
+
             Route::get('permissions/export/excel', [TenantPermissionController::class, 'exportExcel'])
                 ->name('tenant.subdomain.permissions.export.excel');
 
             Route::get('permissions/export/pdf', [TenantPermissionController::class, 'exportPdf'])
                 ->name('tenant.subdomain.permissions.export.pdf');
+
+            Route::delete('permissions/{permission}', [TenantPermissionController::class, 'destroy'])
+                ->name('tenant.subdomain.permissions.destroy');
 
             // Attachments page (requires Attachement permission on tenant guard)
             Route::get('attachments', [\App\Http\Controllers\TenantAttachmentController::class, 'index'])

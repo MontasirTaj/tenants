@@ -44,6 +44,49 @@ class TenantRoleController extends Controller
         return back()->with('status', __('تم ربط الصلاحية بالدور'));
     }
 
+    public function edit(string $subdomain, int $role)
+    {
+        $model = Role::findOrFail($role);
+        return view('pages.tenant.roles.edit', ['role' => $model]);
+    }
+
+    public function update(Request $request, string $subdomain, int $role)
+    {
+        $model = Role::findOrFail($role);
+
+        $data = $request->validate([
+            // نستخدم اتصال "tenant" لضمان التحقق داخل قاعدة بيانات المستأجر
+            'name' => 'required|string|max:64|unique:tenant.roles,name,' . $model->id,
+        ]);
+
+        $oldName = $model->name;
+        $model->name = $data['name'];
+        $model->save();
+
+        tenant_activity('tenant.roles.update', 'update_role', $model, [
+            'description' => 'تم تحديث اسم الدور',
+            'old_name' => $oldName,
+            'new_name' => $model->name,
+        ]);
+
+        return redirect()->route('tenant.subdomain.roles.index', ['subdomain' => $subdomain])
+            ->with('status', __('تم تحديث الدور'));
+    }
+
+    public function destroy(string $subdomain, int $role)
+    {
+        $model = Role::findOrFail($role);
+
+        tenant_activity('tenant.roles.destroy', 'delete_role', $model, [
+            'description' => 'تم حذف دور',
+            'name' => $model->name,
+        ]);
+
+        $model->delete();
+
+        return back()->with('status', __('تم حذف الدور'));
+    }
+
     /**
      * عرض جميع الأدوار مع الصلاحيات المرتبطة بكل دور.
      */
