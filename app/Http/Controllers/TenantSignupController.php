@@ -101,10 +101,13 @@ class TenantSignupController extends Controller
 
             // بداية الاشتراك الآن، ونهايته بعد أسبوع ناقص يوم واحد
             $startDate = Carbon::now()->toDateString();
-            $endDate = Carbon::parse($startDate)->addWeek()->subDay()->toDateString();
+            $trialEnd = Carbon::parse($startDate)->addWeek()->subDay()->toDateString();
+            $endDate = $trialEnd;
 
             $tenantModel->SubscriptionStartDate = $startDate;
             $tenantModel->SubscriptionEndDate = $endDate;
+            // في حالة الاشتراك المجاني نملأ أيضاً تاريخ نهاية التجربة
+            $tenantModel->TrialEndDate = $trialEnd;
             $tenantModel->save();
 
             // سجل عملية مجانية

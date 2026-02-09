@@ -72,7 +72,8 @@ class TenantDashboardController extends Controller
                 $billing['subscription_end'] = $subscriptionEnd;
                 $billing['days_to_end'] = $daysToEnd;
 
-                if ($trialEnd && $now->lt($trialEnd)) {
+                // نعتبر حالة "فترة تجريبية" فقط إذا كانت الخطة الحالية مجانية وما زال داخل مدة التجربة
+                if ($tenant->Plan === 'free' && $trialEnd && $now->lt($trialEnd)) {
                     $billing['status'] = 'trial';
                 } elseif ($subscriptionEnd) {
                     if ($now->gt($subscriptionEnd)) {

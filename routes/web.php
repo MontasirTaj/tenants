@@ -13,6 +13,7 @@ use App\Http\Controllers\TenantDashboardController;
 use App\Http\Controllers\TenantUserController;
 use App\Http\Controllers\TenantRoleController;
 use App\Http\Controllers\TenantPermissionController;
+use App\Http\Controllers\TenantUpgradeController;
 use App\Http\Controllers\TenantProfileController;
 use App\Http\Controllers\TenantActivityController;
 use App\Http\Controllers\TenantSettingsController;
@@ -281,10 +282,20 @@ Route::domain('{subdomain}.' . parse_url(config('app.url'), PHP_URL_HOST))
             ];
         })->name('tenant.subdomain.dbtest');
 
-        Route::middleware(['tenant.auth', \App\Http\Middleware\TenantActivityLogger::class])->group(function () {
+        Route::middleware(['tenant.auth', \App\Http\Middleware\TenantActivityLogger::class, \App\Http\Middleware\CheckTenantTrial::class])->group(function () {
 
             Route::get('dashboard', [TenantDashboardController::class, 'index'])
                 ->name('tenant.subdomain.dashboard');
+
+            // Upgrade from free plan to paid
+            Route::get('upgrade/plans', [TenantUpgradeController::class, 'showPlans'])
+                ->name('tenant.subdomain.upgrade.plans');
+            Route::get('upgrade/checkout/{plan}', [TenantUpgradeController::class, 'startCheckout'])
+                ->name('tenant.subdomain.upgrade.checkout');
+            Route::get('upgrade/success', [TenantUpgradeController::class, 'success'])
+                ->name('tenant.subdomain.upgrade.success');
+            Route::get('upgrade/cancel', [TenantUpgradeController::class, 'cancel'])
+                ->name('tenant.subdomain.upgrade.cancel');
 
             // Conversations & messages
             Route::get('messages', [\App\Http\Controllers\TenantConversationController::class, 'index'])

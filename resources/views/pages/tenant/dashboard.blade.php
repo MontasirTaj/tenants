@@ -49,6 +49,35 @@
             </div>
         </div>
 
+        @php
+            $currentPlan = $billing['plan'] ?? null;
+            $trialDaysLeft = isset($billing['days_to_end']) ? (int) $billing['days_to_end'] : null;
+        @endphp
+
+        @if ($isManager && $currentPlan === 'free')
+            <div class="row mb-3">
+                <div class="col-12 col-md-10 mx-auto">
+                    <div class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <strong>نسختك الحالية مجانية.</strong>
+                            <span class="ms-1">
+                                يمكنك الترقية إلى خطة مدفوعة للحصول على مزايا إضافية وسعة أكبر.
+                                @if (!is_null($trialDaysLeft) && $trialDaysLeft >= 0)
+                                    <span class="d-block mt-1">عدد الأيام المتبقية في التجربة المجانية:
+                                        <strong>{{ $trialDaysLeft }}</strong> يوم</span>
+                                @endif
+                            </span>
+                        </div>
+                        <a href="{{ route('tenant.subdomain.upgrade.plans', ['subdomain' => $sub]) }}"
+                            class="btn btn-sm btn-primary tenant-action-btn">
+                            <i class="mdi mdi-arrow-up-bold-circle-outline"></i>
+                            <span>ترقية الاشتراك</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         @if (isset($stats))
             <div class="row tenant-dashboard-metrics">
                 <div class="col-sm-6 col-lg-3 mb-3">

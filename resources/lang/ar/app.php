@@ -104,6 +104,8 @@ return [
     'tenant_dash_last_activity' => 'آخر نشاط مهم',
     'tenant_dash_open_complaints' => 'البلاغات المفتوحة',
     'tenant_dash_subscription_status' => 'حالة الاشتراك',
+    'subscriber_status_trial' => 'فترة تجريبية',
+    'subscriber_status_active' => 'اشتراك نشط',
     'tenant_dash_activity_timeline' => 'أحدث الأنشطة',
     'tenant_dash_activity_empty' => 'لا توجد أنشطة مسجّلة حتى الآن لهذا المستأجر.',
     'last_activity' => 'آخر نشاط',
