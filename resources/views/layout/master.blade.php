@@ -545,6 +545,7 @@
     <!-- end common js -->
 
     @stack('custom-scripts')
+    @include('layout.partials.auto-logout')
 </body>
 
 </html>

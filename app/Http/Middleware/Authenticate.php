@@ -32,12 +32,17 @@ class Authenticate extends Middleware
 
         // Build login path context-aware
         if ($isSubdomainContext || $isSubRoute) {
+            // Tenant subdomain login
             $path = '/'.$locale.'/login';
         } elseif ($isPathBasedRoute && $subdomain) {
+            // Path-based tenant login (rare)
             $path = '/'.$locale.'/tenant/'.$subdomain.'/login';
+        } elseif ($request->routeIs('admin.*') || str_starts_with($request->path(), $locale.'/admin')) {
+            // Company admin area login
+            $path = '/'.$locale.'/admin/login';
         } else {
-            // Fallback to main-domain login (if any)
-            $path = '/'.$locale.'/login';
+            // Fallback: send to admin login on main domain
+            $path = '/'.$locale.'/admin/login';
         }
         // Return direct path to avoid locale middleware interference on subdomains
         return $path;

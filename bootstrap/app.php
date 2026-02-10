@@ -28,12 +28,14 @@ return Application::configure(basePath: dirname(__DIR__))
             // Spatie permissions middleware aliases (package namespace: Spatie\\Permission\\Middleware)
             'permission'            => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role'                  => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            // Inactivity auto-logout
+            'auto.logout'           => \App\Http\Middleware\AutoLogoutInactive::class,
         ]);
 
-        // Remove IdentifyTenant from global web group; per-route tenant DB is set via SetTenantConnection
-        // $middleware->web(append: [
-        //     \App\Http\Middleware\IdentifyTenant::class,
-        // ]);
+        // Apply inactivity auto-logout to all web routes (only affects authenticated users)
+        $middleware->web(append: [
+            \App\Http\Middleware\AutoLogoutInactive::class,
+        ]);
 
     })
     ->withExceptions(function (Exceptions $exceptions): void {
